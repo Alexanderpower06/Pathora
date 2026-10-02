@@ -1,0 +1,33 @@
+{
+  "name": "pathora-career",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env backend/server.js",
+    "test": "node --test backend/tests/*.test.js",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run format:check && npm run lint && node scripts/check-syntax.js && npm test",
+    "dev": "node backend/scripts/dev.js",
+    "migrate:sqlite": "node --env-file-if-exists=.env backend/scripts/migrate-sqlite.js",
+    "demo": "node backend/scripts/demo.js",
+    "test:postgres": "node backend/scripts/test.js",
+    "lint": "eslint frontend backend scripts e2e *.config.js",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
+    "embedded-postgres": "18.4.0-beta.17",
+    "eslint": "10.11.0",
+    "globals": "17.13.0",
+    "prettier": "3.9.9"
+  },
+  "dependencies": {
+    "pg": "8.23.1"
+  }
+}

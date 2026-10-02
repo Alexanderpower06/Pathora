@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0f172a" />
+    <meta
+      name="description"
+      content="A practical internship plan for college students. Find a direction, recognize your experience, and choose your next step."
+    />
+    <title>Pathora — Your next internship step</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#content">Skip to your plan</a>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="Pathora home"
+          ><span class="brand-mark">p</span>pathora<span class="brand-dot">.</span></a
+        >
+        <p class="sidebar-note">A little direction.<br />A practical next step.</p>
+        <nav aria-label="Your workspace">
+          <button data-view="today" aria-current="page">This week <span>↗</span></button>
+          <button data-view="direction">Your direction</button>
+          <button data-view="roadmap">Your roadmap</button>
+          <button data-view="skills">My skills</button>
+          <button data-view="evidence">Your evidence</button>
+          <button data-view="applications">Applications</button>
+        </nav>
+        <div class="sidebar-bottom">
+          <p>Progress starts with<br />one manageable step.</p>
+          <small>Pathora · Student MVP</small>
+        </div>
+      </aside>
+      <div class="workspace">
+        <header class="topbar">
+          <span>Student workspace</span>
+          <div>
+            <span id="connection" class="connection">Connecting…</span
+            ><button id="edit-profile" class="button secondary small">Your profile</button>
+            <button id="sign-out" class="button secondary small">Sign out</button>
+          </div>
+        </header>
+        <main id="content" tabindex="-1"><p class="loading">Finding your starting point…</p></main>
+        <footer>
+          Small steps. Real momentum. <span>A plan is guidance, not a hiring prediction.</span>
+        </footer>
+      </div>
+    </div>
+    <div id="notice" class="notice" role="status" hidden></div>
+    <dialog id="profile-dialog" aria-labelledby="profile-title">
+      <div class="dialog-head">
+        <span>Your starting point</span
+        ><button class="icon-button" data-close="profile-dialog" aria-label="Close profile">
+          ×
+        </button>
+      </div>
+      <h2 id="profile-title">Your profile</h2>
+      <p>You don’t need to have it figured out. Tell us what you have and the time you can give.</p>
+      <form id="profile-form">
+        <fieldset>
+          <legend>Situation and education</legend>
+          <div id="profile-education"></div>
+          <div class="form-grid">
+            <label
+              >Your name<input name="name" maxlength="80" autocomplete="given-name" required
+            /></label>
+            <label>Your major<input name="major" list="majors" maxlength="150" /></label>
+            <datalist id="majors">
+              <option>Computer Science</option>
+              <option>Information Technology</option>
+              <option>Data Science</option>
+              <option>Mathematics</option>
+              <option>Statistics</option>
+              <option>Business Administration</option>
+              <option>Economics</option>
+              <option>Engineering</option>
+              <option>Design</option>
+              <option>Psychology</option>
+              <option>Undeclared</option>
+            </datalist>
+            <label>Expected graduation<input name="graduation" type="month" /></label>
+            <label>Application target date<input name="targetDate" type="date" required /></label>
+          </div>
+          <label
+            >Hours you can give each week<input
+              name="weeklyHours"
+              type="number"
+              min="1"
+              max="20"
+              value="5"
+              required
+            /><small>Choose a sustainable amount, from 1 to 20 hours.</small></label
+          >
+        </fieldset>
+        <fieldset>
+          <legend>What interests you?</legend>
+          <p id="interest-context" class="muted" aria-live="polite"></p>
+          <div id="interest-options" class="check-options"></div>
+          <label
+            >Other interests (optional)<input
+              name="additionalInterests"
+              maxlength="500"
+              placeholder="Add up to 5 interests, separated by commas"
+          /></label>
+        </fieldset>
+        <fieldset>
+          <legend>Skills</legend>
+          <p id="skill-context" class="muted" aria-live="polite"></p>
+          <p class="fine-print">
+            Skills from coursework, work, and clubs count. Your selections are self-reported.
+          </p>
+          <div id="skill-options" class="check-options"></div>
+          <label
+            >Other skills (optional)<input
+              name="additionalSkills"
+              maxlength="500"
+              placeholder="Add up to 5 skills, separated by commas"
+          /></label>
+        </fieldset>
+        <fieldset>
+          <legend>Experience you can build on</legend>
+          <div id="profile-experience"></div>
+          <label
+            >Relevant courses or class projects<textarea
+              name="courses"
+              maxlength="1500"
+              rows="2"
+              placeholder="A database course, a group assignment, a research report…"
+            ></textarea>
+          </label>
+          <label
+            >Work, clubs, volunteering, or other experience<textarea
+              name="experience"
+              maxlength="2000"
+              rows="2"
+              placeholder="A campus job, organizing an event, helping a community group…"
+            ></textarea>
+          </label>
+        </fieldset>
+        <button id="change-career-goal" class="text-button" type="button">
+          Change career goal ↓
+        </button>
+        <div class="field">
+          <label for="select-1">Career goal</label
+          ><select id="select-1" name="role">
+            <option value="undecided">I’m exploring — help me compare</option>
+            <option value="frontend">Frontend development</option>
+            <option value="backend">Backend development</option>
+            <option value="data">Data analysis</option>
+          </select>
+        </div>
+        <p class="form-error" id="profile-error" role="alert" hidden></p>
+        <div class="form-actions">
+          <button class="button" type="submit">Save profile <span>→</span></button>
+        </div>
+        <p class="fine-print">
+          Your profile is saved to your account. Changing careers keeps your previous evidence and
+          roadmap progress.
+        </p>
+      </form>
+    </dialog>
+    <dialog id="task-dialog" aria-labelledby="task-title">
+      <div class="dialog-head">
+        <span>One practical step</span
+        ><button class="icon-button" data-close="task-dialog" aria-label="Close task">×</button>
+      </div>
+      <h2 id="task-title"></h2>
+      <div id="task-details"></div>
+      <form id="task-form">
+        <div class="field">
+          <label for="select-2">Task status</label
+          ><select id="select-2" name="status">
+            <option value="todo">Not finished yet</option>
+            <option value="done">Completed — add evidence below</option>
+            <option value="blocked">I’m stuck — describe the blocker</option>
+          </select>
+        </div>
+        <label
+          >What did you do, or where are you stuck?<textarea
+            name="evidence"
+            rows="4"
+            maxlength="1500"
+            placeholder="Describe the result, your contribution, or the help you need."
+          ></textarea>
+        </label>
+        <label
+          >Evidence or resource link (optional)<input
+            name="link"
+            type="url"
+            maxlength="1000"
+            placeholder="https://…"
+        /></label>
+        <p class="fine-print">
+          Evidence is self-reported. A completion mark does not certify a skill.
+        </p>
+        <p id="task-error" class="form-error" role="alert" hidden></p>
+        <button class="button" type="submit">Save this step</button>
+      </form>
+    </dialog>
+    <dialog id="application-dialog" aria-labelledby="application-title">
+      <div class="dialog-head">
+        <span>Your opportunities</span
+        ><button class="icon-button" data-close="application-dialog" aria-label="Close application">
+          ×
+        </button>
+      </div>
+      <h2 id="application-title">Track an internship</h2>
+      <form id="application-form">
+        <div class="form-grid">
+          <label>Company<input name="company" maxlength="120" required /></label
+          ><label>Position<input name="title" maxlength="150" required /></label>
+          <div class="field">
+            <label for="select-3">Direction</label
+            ><select id="select-3" name="role">
+              <option value="frontend">Frontend development</option>
+              <option value="backend">Backend development</option>
+              <option value="data">Data analysis</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="select-4">Status</label
+            ><select id="select-4" name="status">
+              <option>Saved</option>
+              <option>Applied</option>
+              <option>Interviewing</option>
+              <option>Offer</option>
+              <option>Rejected</option>
+              <option>Withdrawn</option>
+            </select>
+          </div>
+          <label>Deadline (optional)<input name="deadline" type="date" /></label
+          ><label>Follow-up date (optional)<input name="followUp" type="date" /></label>
+        </div>
+        <label>Posting link (optional)<input name="link" type="url" maxlength="1000" /></label>
+        <label
+          >Feedback or your next action<textarea
+            name="notes"
+            rows="3"
+            maxlength="1500"
+            placeholder="What did you learn? What will you do next?"
+          ></textarea>
+        </label>
+        <p id="application-error" class="form-error" role="alert" hidden></p>
+        <button class="button" type="submit">Save opportunity</button>
+      </form>
+    </dialog>
+  </body>
+</html>
