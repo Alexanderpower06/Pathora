@@ -49,7 +49,10 @@ test('student onboarding saves, populates a plan and restores progress on sign-i
   await page.getByRole('checkbox', { name: 'None Yet', exact: true }).check();
   await page.getByLabel('What should we call you? (optional)', { exact: true }).fill('Alex');
   await page.getByRole('button', { name: 'See my path →', exact: true }).click();
-  await expect(page.getByText('50%', { exact: true })).toBeVisible();
+  const skillMatch = page.getByRole('progressbar', { name: 'Current skill match', exact: true });
+  await expect(skillMatch).toBeVisible();
+  await expect(skillMatch).toHaveAttribute('value', '50');
+  await expect(skillMatch).toHaveAttribute('max', '100');
   await page.getByRole('button', { name: 'View my Pathora →', exact: true }).click();
   await expect(
     page.getByRole('heading', { name: 'A manageable next step, Alex.', exact: true }),
