@@ -54,7 +54,7 @@ export function buildStudentState(document, now = new Date(), careers = {}) {
     warnings.push('Your application target has passed. Update it and check current openings.');
   else if (daysLeft <= 14)
     warnings.push(
-      'Your target is within two weeks. Prioritize suitable applications and résumé feedback; you can keep learning alongside them.',
+      'Your target is within two weeks. Prioritize suitable applications and resume feedback; you can keep learning alongside them.',
     );
   if (profile.role === 'undecided')
     warnings.push(

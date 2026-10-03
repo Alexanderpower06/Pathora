@@ -102,7 +102,7 @@ export const ROLES = {
 };
 export const RESOURCES = {
   resume: {
-    title: 'CareerOneStop résumé guide',
+    title: 'CareerOneStop resume guide',
     url: 'https://www.careeronestop.org/JobSearch/Resumes/ResumeGuide/introduction.aspx',
   },
   explore: { title: 'My Next Move career exploration', url: 'https://www.mynextmove.org/' },

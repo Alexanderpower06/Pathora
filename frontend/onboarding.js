@@ -37,13 +37,19 @@ function saveDraft() {
   draftQueue = draftQueue.catch(() => {}).then(() => request('/draft', 'PUT', payload));
   return draftQueue;
 }
+function lockControls(locked) {
+  for (const control of $('#onboarding-view').querySelectorAll('button, input, select, textarea'))
+    control.disabled = locked;
+  $('#onboarding-signout').disabled = locked;
+}
 async function update(path, method, data) {
   if (busy) return;
   busy = true;
-  for (const button of $('#onboarding-view').querySelectorAll('button')) button.disabled = true;
+  const pendingDraft = saveDraft();
+  lockControls(true);
   $('#save-status').textContent = 'Saving…';
   try {
-    await saveDraft();
+    await pendingDraft;
     state = await request(path, method, data);
     render();
   } catch (failure) {
@@ -51,7 +57,7 @@ async function update(path, method, data) {
     $('#save-status').textContent = 'Not saved — try again';
   } finally {
     busy = false;
-    for (const button of $('#onboarding-view').querySelectorAll('button')) button.disabled = false;
+    lockControls(false);
   }
 }
 function back() {
@@ -165,12 +171,18 @@ function render() {
   window.scrollTo(0, 0);
 }
 $('#onboarding-signout').addEventListener('click', async () => {
+  if (busy) return;
+  busy = true;
+  const pendingDraft = saveDraft();
+  lockControls(true);
   try {
-    await saveDraft();
+    await pendingDraft;
     await authRequest('logout', {});
     window.location.assign('/login');
   } catch (failure) {
     error(failure.message);
+    busy = false;
+    lockControls(false);
   }
 });
 window.addEventListener('pageshow', (event) => {

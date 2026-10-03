@@ -40,7 +40,7 @@ test('PostgreSQL preserves the internship profile, evidence, and applications ac
   await service.updateTask('resume', {
     role: 'frontend',
     status: 'done',
-    evidence: 'Created a résumé describing my group project',
+    evidence: 'Created a resume describing my group project',
     link: '',
   });
   await service.addApplication({
@@ -68,7 +68,7 @@ test('PostgreSQL row locks preserve concurrent student saves and rollback failed
     service.updateTask('resume', {
       role: 'frontend',
       status: 'done',
-      evidence: 'Wrote a one page résumé with two examples',
+      evidence: 'Wrote a one page resume with two examples',
       link: '',
     }),
     service.updateTask('compare-postings', {

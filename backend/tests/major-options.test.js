@@ -78,3 +78,18 @@ test('custom answers are bounded and unknown predefined answers are rejected', (
   });
   assert.deepEqual(validated.additionalSkills, ['Facilitation']);
 });
+
+test('profile editing offers core skills for both retained and new careers', async () => {
+  const { profileSkillOptions } = await import('../../frontend/modules/profile.js');
+  const { CAREERS } = await import('../onboarding/catalog.js');
+  const { publicCatalog } = await import('../internships/catalog.js');
+  const catalog = publicCatalog();
+  catalog.roles.push(...CAREERS);
+  for (const role of catalog.roles) {
+    const options = profileSkillOptions(catalog, role.id, ['Previously saved skill']);
+    assert.ok(role.skills.every((skill) => options.includes(skill)));
+    assert.ok(options.includes('Critical thinking'));
+    assert.ok(options.includes('Previously saved skill'));
+    assert.equal(options.length, new Set(options).size);
+  }
+});

@@ -59,7 +59,7 @@ test('student API completes onboarding, evidence, and application flow; modules 
     role: 'frontend',
     status: 'Applied',
     followUp: '2026-01-01',
-    notes: 'Ask for résumé feedback',
+    notes: 'Ask for resume feedback',
   });
   assert.equal(added.status, 201);
   assert.equal(added.data.reminders.length, 1);

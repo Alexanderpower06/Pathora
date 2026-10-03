@@ -32,8 +32,12 @@ export function sanitizeDraft(step, answers) {
               : ['', 'Beginner', 'Intermediate', 'Advanced'].includes(item)),
         ),
       );
-    } else if (Array.isArray(value)) {
-      if (value.length > 200 || value.some((item) => typeof item !== 'string' || item.length > 150))
+    } else if (['interests', 'preferences', 'existingSkills', 'experienceKinds'].includes(key)) {
+      if (
+        !Array.isArray(value) ||
+        value.length > 200 ||
+        value.some((item) => typeof item !== 'string' || item.length > 150)
+      )
         throw new InputError('Invalid draft selections.');
       draft[key] = [...new Set(value)];
     } else {

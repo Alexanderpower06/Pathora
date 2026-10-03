@@ -1,5 +1,5 @@
-import { SITUATIONS, DEGREES, EXPERIENCES, LEVELS } from '../onboarding/catalog.js';
-import { one, many } from '../onboarding/validation.js';
+import { SITUATIONS, DEGREES, EXPERIENCES } from '../onboarding/catalog.js';
+import { one, many, validateSkillLevels } from '../onboarding/validation.js';
 import { InputError, validateText } from '../validation.js';
 import { INTERESTS, SKILLS, ROLES } from './catalog.js';
 
@@ -78,7 +78,10 @@ export function validateStudent(input, careers = {}) {
   const role = validateText(input.role, 'Role', 30, true);
   if (role !== 'undecided' && !Object.hasOwn(roles, role))
     throw new InputError('Choose a supported internship direction.');
-  if (input.experienceKinds?.includes('None Yet') && input.experienceKinds.length > 1)
+  const experienceKinds = many(input.experienceKinds ?? [], EXPERIENCES, 'experience');
+  const existingSkills = list(input.existingSkills, skills, 'skills');
+  const skillLevels = validateSkillLevels(input.skillLevels, existingSkills);
+  if (experienceKinds.includes('None Yet') && experienceKinds.length > 1)
     throw new InputError('Choose None Yet by itself.');
   return {
     situation: input.situation
@@ -86,12 +89,8 @@ export function validateStudent(input, careers = {}) {
       : 'College Student',
     degree: input.degree ? one(input.degree, DEGREES, 'a degree level') : '',
     school: validateText(input.school ?? '', 'School', 150),
-    experienceKinds: many(input.experienceKinds ?? [], EXPERIENCES, 'experience'),
-    skillLevels: Object.fromEntries(
-      Object.entries(input.skillLevels ?? {})
-        .filter(([skill]) => input.existingSkills.includes(skill))
-        .map(([skill, level]) => [skill, one(level, LEVELS, 'a skill level')]),
-    ),
+    experienceKinds,
+    skillLevels,
     timeZone: validateTimeZone(input.timeZone),
     name: validateText(input.name, 'Name', 80, true),
     major: validateText(
@@ -105,7 +104,7 @@ export function validateStudent(input, careers = {}) {
     targetDate: validateDate(input.targetDate, 'Application target', true),
     role,
     interests: list(input.interests, INTERESTS, 'interests'),
-    existingSkills: list(input.existingSkills, skills, 'skills'),
+    existingSkills,
     additionalInterests: additionalList(input.additionalInterests, 'interests'),
     additionalSkills: additionalList(input.additionalSkills, 'skills'),
     courses: validateText(input.courses ?? '', 'Courses', 1500),

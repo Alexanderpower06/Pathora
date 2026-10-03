@@ -5,6 +5,17 @@ export function preserveSelections(suggested, selected) {
   return [...new Set([...suggested, ...selected])];
 }
 
+export function profileSkillOptions(catalog, roleId, selected) {
+  const role = catalog.roles.find((item) => item.id === roleId);
+  const careerSkills = role?.categories
+    ? Object.values(role.categories).flat()
+    : (role?.skills ?? []);
+  return preserveSelections(
+    [...(catalog.commonSkills ?? catalog.skills), ...careerSkills],
+    selected,
+  );
+}
+
 export function setupProfile({ getState, api, onSaved }) {
   const form = $('#profile-form');
   const chosen = (name) => new FormData(form).getAll(name);
@@ -31,17 +42,7 @@ export function setupProfile({ getState, api, onSaved }) {
     );
     options(
       '#skill-options',
-      preserveSelections(
-        [
-          ...catalog.commonSkills,
-          ...(catalog.roles.find((role) => role.id === form.elements.role.value)?.categories
-            ? Object.values(
-                catalog.roles.find((role) => role.id === form.elements.role.value).categories,
-              ).flat()
-            : []),
-        ],
-        skills,
-      ),
+      profileSkillOptions(catalog, form.elements.role.value, skills),
       'existingSkills',
       skills,
       levels,

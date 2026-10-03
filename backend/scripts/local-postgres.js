@@ -1,4 +1,5 @@
 import EmbeddedPostgres from 'embedded-postgres';
+import { initializePostgresDirectory } from './postgres-directory.js';
 import { createServer } from 'node:net';
 import { once } from 'node:events';
 
@@ -28,7 +29,7 @@ export async function startLocalPostgres({ databaseDir, password, port, persiste
     },
     onError: (error) => console.error('Local PostgreSQL:', error),
   });
-  await cluster.initialise();
+  await initializePostgresDirectory(cluster, databaseDir);
   await cluster.start();
   const admin = cluster.getPgClient('postgres', '127.0.0.1');
   try {

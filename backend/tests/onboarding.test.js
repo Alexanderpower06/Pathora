@@ -234,3 +234,40 @@ test('authenticated HTTP onboarding survives logout and login; account drafts st
   ])
     assert.equal((await fetch(base + path)).status, 200);
 });
+
+test('malformed drafts are rejected atomically instead of breaking resumed forms', async () => {
+  const repo = memoryStudentRepository(),
+    flow = createOnboardingService(repo);
+  await flow.step({ step: 1, answers: { situation: 'College Student' } });
+  await assert.rejects(
+    flow.draft({ step: 2, stage: 'goal', answers: { major: ['Computer Science'] } }),
+    { status: 400 },
+  );
+  await flow.step({ step: 2, answers: education });
+  await flow.finder({ stage: 'start' });
+  await assert.rejects(
+    flow.draft({ step: 3, stage: 'interests', answers: { interests: 'Sports' } }),
+    { status: 400 },
+  );
+  const state = await flow.state();
+  assert.equal(state.stage, 'interests');
+  assert.deepEqual(state.drafts ?? {}, {});
+});
+test('malformed profile skills and experience produce validation errors and preserve the saved profile', async () => {
+  const repo = memoryStudentRepository(),
+    flow = createOnboardingService(repo),
+    service = createStudentService(repo);
+  await toSkills(flow);
+  await finish(flow, ['Python']);
+  const initial = await service.state();
+  for (const changes of [
+    { existingSkills: null, skillLevels: { Python: 'Beginner' } },
+    { experienceKinds: 123 },
+    { skillLevels: ['Beginner'] },
+    { skillLevels: null },
+  ]) {
+    await assert.rejects(service.saveProfile({ ...initial.profile, ...changes }), { status: 400 });
+    assert.deepEqual((await service.state()).profile, initial.profile);
+  }
+  await flow.state();
+});

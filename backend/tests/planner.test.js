@@ -104,7 +104,7 @@ test('role changes preserve progress and stale task saves are rejected atomicall
   await service.updateTask('resume', {
     role: 'frontend',
     status: 'done',
-    evidence: 'Wrote a résumé using my class project',
+    evidence: 'Wrote a resume using my class project',
     link: '',
   });
   await service.saveProfile({ ...student, role: 'backend' });
@@ -112,7 +112,7 @@ test('role changes preserve progress and stale task saves are rejected atomicall
     service.updateTask('resume', {
       role: 'frontend',
       status: 'done',
-      evidence: 'A stale résumé update',
+      evidence: 'A stale resume update',
       link: '',
     }),
     { status: 409 },
@@ -161,7 +161,7 @@ test('concurrent updates preserve tasks and applications; invalid updates do not
     service.updateTask('resume', {
       role: 'frontend',
       status: 'done',
-      evidence: 'Wrote my résumé with two examples',
+      evidence: 'Wrote my resume with two examples',
       link: '',
     }),
     service.updateTask('compare-postings', {

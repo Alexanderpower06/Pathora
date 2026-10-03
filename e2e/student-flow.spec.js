@@ -128,3 +128,28 @@ test('unsure users explore rule-based matches with mobile-friendly controls', as
     page.getByRole('heading', { name: 'A manageable next step, there.', exact: true }),
   ).toBeVisible();
 });
+
+test('onboarding locks fields and sign-out until the step save finishes', async ({ page }) => {
+  await signup(page, 'slow-save@example.test');
+  let releaseSave;
+  const gate = new Promise((resolve) => {
+    releaseSave = resolve;
+  });
+  await page.route('**/api/student/onboarding/step', async (route) => {
+    await gate;
+    await route.continue();
+  });
+  await page.getByRole('radio', { name: 'College Student', exact: true }).check();
+  await next(page);
+  try {
+    await expect(page.getByRole('radio', { name: 'College Student', exact: true })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Continue →', exact: true })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Sign out', exact: true })).toBeDisabled();
+  } finally {
+    releaseSave();
+  }
+  await expect(
+    page.getByRole('heading', { name: 'Tell us about your education', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByLabel('Degree level', { exact: true })).toBeEnabled();
+});

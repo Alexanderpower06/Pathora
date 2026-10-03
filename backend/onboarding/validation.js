@@ -15,6 +15,15 @@ export function many(value, allowed, label, required = false) {
     throw new InputError(`Choose valid ${label}.`);
   return [...new Set(value)];
 }
+export function validateSkillLevels(value = {}, selectedSkills) {
+  if (!value || typeof value !== 'object' || Array.isArray(value))
+    throw new InputError('Choose valid skill levels.');
+  return Object.fromEntries(
+    Object.entries(value)
+      .filter(([skill]) => selectedSkills.includes(skill))
+      .map(([skill, level]) => [skill, one(level, LEVELS, 'a skill level')]),
+  );
+}
 export function validateStep(step, input, saved, careers) {
   if (!input || typeof input !== 'object' || Array.isArray(input))
     throw new InputError('Enter answers for this step.');
@@ -52,10 +61,7 @@ export function validateStep(step, input, saved, careers) {
       ]),
     ];
     const existingSkills = many(input.existingSkills, allowed, 'skills');
-    const skillLevels = {};
-    for (const skill of existingSkills)
-      if (input.skillLevels?.[skill])
-        skillLevels[skill] = one(input.skillLevels[skill], LEVELS, 'a skill level');
+    const skillLevels = validateSkillLevels(input.skillLevels, existingSkills);
     return { existingSkills, skillLevels };
   }
   const experienceKinds = many(input.experienceKinds, EXPERIENCES, 'experience options', true);
