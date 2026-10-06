@@ -1,3 +1,5 @@
+import { EXPLORATION_CAREERS } from '../exploration/catalog.js';
+import { pathboardState } from '../exploration/service.js';
 import { onboardingStatus } from '../onboarding/service.js';
 import { skillMatch } from '../onboarding/matching.js';
 import { publicCatalog, ROLES } from './catalog.js';
@@ -23,6 +25,8 @@ export function buildStudentState(document, now = new Date(), careers = {}) {
       profile: null,
       onboardingCompleted,
       catalog,
+      explorationCareers: EXPLORATION_CAREERS,
+      pathboard: pathboardState(document),
       recommendations: [],
       tasks: [],
       applications: [],
@@ -67,6 +71,8 @@ export function buildStudentState(document, now = new Date(), careers = {}) {
     demo: Boolean(document.demo),
     profile,
     onboardingCompleted,
+    explorationCareers: EXPLORATION_CAREERS,
+    pathboard: pathboardState(document),
     skillMatch: roles[profile.role]
       ? skillMatch(profile.existingSkills, roles[profile.role])
       : null,

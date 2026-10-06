@@ -156,3 +156,49 @@ test('onboarding locks fields and sign-out until the step save finishes', async 
   ).toBeVisible();
   await expect(page.getByLabel('Degree level', { exact: true })).toBeEnabled();
 });
+
+test('Pathboard saves experiments without changing a chosen Path and restores them on sign-in', async ({
+  page,
+}) => {
+  await signup(page, 'pathboard@example.test');
+  await page.getByRole('radio', { name: 'Just Exploring', exact: true }).check();
+  await next(page);
+  await next(page);
+  await page.getByLabel('Search careers', { exact: true }).fill('Software');
+  await page.getByRole('radio', { name: 'Software Engineer', exact: true }).check();
+  await next(page);
+  await next(page);
+  await page.getByRole('checkbox', { name: 'None Yet', exact: true }).check();
+  await page.getByRole('button', { name: 'See my path →', exact: true }).click();
+  await page.getByRole('button', { name: 'View my Pathora →', exact: true }).click();
+  await page.getByRole('button', { name: 'Explore', exact: true }).click();
+  const software = page
+    .locator('section.panel')
+    .filter({ has: page.getByRole('heading', { name: 'Software Engineering', exact: true }) });
+  await software.getByRole('button', { name: 'Add to Pathboard', exact: true }).click();
+  await page.getByText('Reflect and record your experiment', { exact: true }).click();
+  await page.getByRole('button', { name: 'Finish experiment', exact: true }).click();
+  await expect(page.getByRole('alert')).toContainText('Experiment evidence is required');
+  for (const [label, value] of [
+    ['What did I enjoy?', 'Building a useful program'],
+    ['What did I dislike?', 'Repetitive setup'],
+    ['What was difficult?', 'Debugging the state'],
+    ['What would I want to become better at?', 'Testing and debugging'],
+    ['Would I want to do similar work professionally?', 'Maybe, I want another experiment'],
+    ['What did you make or try?', 'Built and tested a local study planner.'],
+  ])
+    await page.getByLabel(label, { exact: true }).fill(value);
+  await page
+    .getByRole('combobox', { name: 'Would I explore this further?', exact: true })
+    .selectOption('Maybe');
+  await page.getByRole('button', { name: 'Finish experiment', exact: true }).click();
+  await expect(page.getByText('Experiment: Completed', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await signin(page, 'pathboard@example.test');
+  await page.getByRole('button', { name: 'Pathboard', exact: true }).click();
+  await expect(page.getByText('Experiment: Completed', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'This week', exact: false }).click();
+  await expect(
+    page.getByText('Working toward a software engineer opportunity.', { exact: true }),
+  ).toBeVisible();
+});

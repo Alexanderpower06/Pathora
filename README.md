@@ -104,3 +104,11 @@ On startup, missing starter careers are inserted into `pathora_career_catalog(id
 Update a record through a database administration tool using parameterized SQL. Keep IDs stable, ensure every core skill appears in its categories, and keep milestone IDs unique and stable. Each record has `id`, `name`, `description`, `categories`, `skills`, two `affinities`, `environment`, `source`, `stretch`, and `milestones`. This MVP has no catalog administration UI. `backend/onboarding/catalog.js` defines the initial seed schema and content. Core skills and milestones should be reviewed with campus advisers before public release.
 
 Account documents contain an `onboarding` object with `completed`, `step`, `highestStep`, `stage`, validated `answers`, and incomplete `drafts`. Only validated steps advance the flow, and completion revalidates all five steps atomically before creating the profile. Drafts never count as skills or completion. Previously completed profiles are recognized without a destructive migration.
+
+## CS-focused product iteration
+
+Explore now offers five technology directions. Students can save options to a private Pathboard, compare their work and focus, try a Career Experiment, and save reflections without changing their active Path. The dashboard explains Next Move selection and Pathora Progress. Cloud and IT starter curricula are added without replacing existing career records.
+
+After pulling these changes, restart `npm run dev` so the backend loads the new routes and catalog seeds. Existing accounts and saved progress stay in PostgreSQL. `npm run demo` is temporary and does not contain your saved account.
+
+See [the product contract](docs/PRODUCT.md), [architecture and migration plan](docs/ARCHITECTURE.md), and [student research protocol](docs/RESEARCH.md) for implemented behavior, remaining work, and validation gates.

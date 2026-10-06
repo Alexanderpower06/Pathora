@@ -696,3 +696,57 @@ h1,
 .notice {
   overflow-wrap: anywhere;
 }
+
+.career-detail {
+  margin-top: 1.5rem;
+}
+.career-detail summary,
+.panel details summary {
+  cursor: pointer;
+  padding: 0.75rem 0;
+  font-weight: 600;
+}
+.career-detail .panel {
+  margin: 1rem 0;
+  padding: 1.25rem;
+}
+.career-detail li {
+  margin-block: 0.6rem;
+}
+.reflection-form {
+  margin-top: 1rem;
+}
+.reflection-form textarea {
+  resize: vertical;
+}
+.reflection-form button {
+  margin: 0.5rem 0.5rem 0.5rem 0;
+}
+.comparison-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.career-comparison {
+  width: 100%;
+  border-collapse: collapse;
+}
+.career-comparison caption {
+  text-align: left;
+  padding: 0.75rem 0;
+  color: var(--muted);
+}
+.career-comparison th,
+.career-comparison td {
+  min-width: 180px;
+  padding: 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #334155;
+}
+.career-comparison th {
+  color: #f8fafc;
+}
+.comparison-scroll:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 4px;
+}

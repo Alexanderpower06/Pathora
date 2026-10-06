@@ -1,3 +1,4 @@
+import { explorationCareer } from '../exploration/catalog.js';
 // Starter curriculum data. PostgreSQL owns editable copies after first initialization.
 const definitions = [
   [
@@ -248,6 +249,73 @@ const definitions = [
     'mixed',
   ],
 ];
+// These starter curricula are Pathora learning choices, not universal hiring requirements.
+definitions.push(
+  [
+    'cloud',
+    'Cloud / DevOps Engineer',
+    'Operate and improve application infrastructure.',
+    {
+      Systems: ['Linux', 'Networking', 'Shell scripting'],
+      Delivery: ['Git', 'Containers', 'Deployment'],
+      Reliability: ['Monitoring', 'Documentation'],
+    },
+    [
+      'Linux',
+      'Networking',
+      'Shell scripting',
+      'Git',
+      'Containers',
+      'Deployment',
+      'Monitoring',
+      'Documentation',
+    ],
+    [
+      'Linux Fundamentals',
+      'Networking Practice',
+      'Version Control and Scripting',
+      'Run a Local Application',
+      'Observe Logs and Failures',
+      'Publish a Deployment Runbook',
+      'Practice Systems Interviews',
+      'Apply for Infrastructure Opportunities',
+    ],
+    ['technology', 'problem-solving'],
+    'desk',
+  ],
+  [
+    'systems',
+    'IT / Systems Specialist',
+    'Support users and keep computer systems dependable.',
+    {
+      Systems: ['Operating systems', 'Networking', 'Access control'],
+      Operations: ['Troubleshooting', 'Backups', 'Monitoring'],
+      Support: ['Documentation', 'Communication'],
+    },
+    [
+      'Operating systems',
+      'Networking',
+      'Access control',
+      'Troubleshooting',
+      'Backups',
+      'Monitoring',
+      'Documentation',
+      'Communication',
+    ],
+    [
+      'Operating System Fundamentals',
+      'Networking Basics',
+      'Access Control Practice',
+      'Diagnose a Simulated Issue',
+      'Backup and Restore Practice',
+      'Publish a Support Case Study',
+      'Practice Support Interviews',
+      'Apply for IT Opportunities',
+    ],
+    ['technology', 'people'],
+    'mixed',
+  ],
+);
 export const CAREERS = definitions.map(
   ([id, name, description, categories, skills, titles, affinities, environment]) => ({
     id,
@@ -259,7 +327,7 @@ export const CAREERS = definitions.map(
     environment,
     stretch:
       'This starter plan is guidance. Check actual postings and local education, licensing, and eligibility requirements.',
-    source: {
+    source: explorationCareer(id)?.sources[0] ?? {
       title: 'Career exploration',
       url: 'https://www.mynextmove.org/find/search?s=' + encodeURIComponent(name),
     },
@@ -273,7 +341,10 @@ export const CAREERS = definitions.map(
       hours: 1,
       why: 'Start with one focused practice session, then use feedback to decide what to do next. Completing a session does not certify mastery.',
       deliverable: `Document a concrete result from ${title.toLowerCase()}, what you learned, and what still needs practice.`,
-      dependencies: [],
+      dependencies:
+        ['cloud', 'systems'].includes(id) && index > 0 && index < 6
+          ? [`milestone-${['one', 'two', 'three', 'four', 'five'][index - 1]}`]
+          : [],
       resource: {
         title: 'Explore this career',
         url: 'https://www.mynextmove.org/find/search?s=' + encodeURIComponent(name),

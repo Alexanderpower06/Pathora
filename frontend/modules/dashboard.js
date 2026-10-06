@@ -46,7 +46,7 @@ export function renderDashboard(state, { openTask, changeView }) {
   const hero = el('div', undefined, 'hero-grid');
   const next = panel();
   next.classList.add('next-card');
-  next.append(el('p', 'Your next action', 'eyebrow'));
+  next.append(el('p', 'Your Next Move', 'eyebrow'));
   if (state.next)
     next.append(
       el(
@@ -70,17 +70,48 @@ export function renderDashboard(state, { openTask, changeView }) {
       ),
       action('Review applications →', () => changeView('applications')),
     );
-  const progress = panel('Your plan, your pace');
+  const progress = panel('Pathora Progress');
   const ring = el('div', undefined, 'completion-ring');
   ring.style.setProperty('--completion', state.completion + '%');
   ring.setAttribute('role', 'img');
   ring.setAttribute('aria-label', `${state.completion}% plan completion`);
-  ring.append(el('strong', state.completion + '%'), el('span', 'Plan completion'));
+  ring.append(el('strong', state.completion + '%'), el('span', 'Path completed'));
   progress.append(
     ring,
     el('p', `${state.completedCount} of ${state.tasks.length} steps documented`, 'center'),
     el('p', 'This tracks your plan. It does not predict hiring success.', 'fine-print center'),
   );
+  const calculation = el('details');
+  calculation.append(
+    el('summary', 'How is this calculated?'),
+    el(
+      'p',
+      `${state.completedCount} completed milestones ÷ ${state.tasks.length} defined milestones × 100, rounded to the nearest whole percent. Each milestone counts equally. Evidence is self-reported; skill selections do not complete milestones.`,
+    ),
+  );
+  progress.append(calculation);
+  const why = el('details');
+  why.append(el('summary', 'Why this Next Move?'));
+  if (state.next) {
+    why.append(
+      el(
+        'p',
+        'The planner skips completed steps, checks prerequisites, and fits eligible actions within your weekly hours. Near your application target it prioritizes application preparation. The first planned action is your Next Move.',
+      ),
+    );
+    for (const id of state.next.dependencies) {
+      const requirement = state.tasks.find((task) => task.id === id);
+      why.append(
+        el(
+          'p',
+          `${requirement.title}: ${requirement.status === 'done' ? 'Completed' : 'Incomplete'}`,
+        ),
+      );
+    }
+    if (!state.next.dependencies.length)
+      why.append(el('p', 'This step has no required earlier milestones.'));
+  }
+  next.append(why);
   hero.append(next, progress);
   root.append(hero);
   const weekly = panel(

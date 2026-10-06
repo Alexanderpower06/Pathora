@@ -1,3 +1,4 @@
+import { updatePathboard } from '../exploration/service.js';
 import { defaultCareers, careerMap } from '../onboarding/catalog.js';
 import { randomUUID } from 'node:crypto';
 import { InputError } from '../validation.js';
@@ -27,6 +28,9 @@ export function createStudentService(repository, getCareers = defaultCareers) {
   return {
     async state() {
       return state(await repository.read());
+    },
+    async savePathboard(input) {
+      return mutate((document) => updatePathboard(document, input));
     },
     matches(input) {
       return recommendRoles(validateStudent(input));

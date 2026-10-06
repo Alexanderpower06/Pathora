@@ -1,3 +1,5 @@
+import { renderExplore } from './modules/explore.js';
+import { renderPathboard } from './modules/pathboard.js';
 import { renderSkills } from './modules/skills.js';
 import { $, el, action, notice } from './modules/dom.js';
 import { createApi } from './modules/api.js';
@@ -46,6 +48,8 @@ function render() {
   }
   const pages = {
     today: () => renderDashboard(state, { openTask: tasks.open, changeView }),
+    explore: () => renderExplore(state, { api, changeView }),
+    pathboard: () => renderPathboard(state, { api, changeView }),
     direction: () => renderDirection(state, { api, changeView }),
     skills: () => renderSkills(state, profile.open),
     roadmap: () => renderRoadmap(state, tasks.open),
