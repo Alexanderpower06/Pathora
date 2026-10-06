@@ -78,7 +78,7 @@ test('student onboarding saves, populates a plan and restores progress on sign-i
     page.getByRole('heading', { name: 'A manageable next step, Alex.', exact: true }),
   ).toBeVisible();
   await expect(page.locator('#profile-dialog')).not.toBeVisible();
-  await page.getByRole('button', { name: 'Your evidence', exact: true }).click();
+  await page.getByRole('button', { name: 'Proof of Progress', exact: true }).click();
   await expect(
     page.getByText('Completed a sample Python practice exercise.', { exact: true }),
   ).toBeVisible();
