@@ -1,0 +1,363 @@
+/* Explore uses the existing navy cards and buttons, with progressive detail. */
+.explore-page,
+.career-detail-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  min-width: 0;
+}
+.explore-intro {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.explore-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: stretch;
+}
+.explore-card {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-width: 0;
+}
+.explore-card h2 {
+  margin-top: 0.5rem;
+  font-size: 1.45rem;
+}
+.explore-card ul {
+  padding-left: 1.25rem;
+  color: #cbd5e1;
+}
+.career-field {
+  color: #67e8f9;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.career-pay {
+  font-weight: 600;
+  margin-bottom: 0;
+}
+.career-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: auto;
+  padding-top: 1.25rem;
+}
+.career-actionbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+  background: #0f172af5;
+  border-bottom: 1px solid var(--border);
+}
+.career-section-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.25rem;
+  padding: 1.25rem 0;
+}
+.career-detail-page > .panel {
+  margin-bottom: 1.5rem;
+  scroll-margin-top: 110px;
+}
+.path-stage {
+  border-top: 1px solid var(--border);
+  padding: 0.75rem 0;
+}
+.preparation-milestone {
+  background: #0f172a;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin: 0.75rem 0;
+  padding: 0.75rem 1.25rem;
+}
+.preparation-milestone h4 {
+  margin-bottom: 0.25rem;
+}
+.career-detail-page li {
+  margin-block: 0.5rem;
+}
+.career-feedback {
+  margin-top: 1.5rem;
+}
+.comparison-choice {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.5rem 1rem 0.75rem 0;
+}
+.comparison-choice input {
+  width: auto;
+}
+.guest-header {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+}
+.guest-header nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.guest-explore {
+  max-width: 1280px;
+  padding: 2rem;
+  margin: 0 auto;
+}
+@media (max-width: 800px) {
+  .explore-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .explore-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 480px) {
+  .explore-filters {
+    grid-template-columns: 1fr;
+  }
+  .guest-header,
+  .guest-explore {
+    padding: 1.25rem;
+  }
+  .guest-header {
+    flex-wrap: wrap;
+  }
+  .career-actionbar .button {
+    flex: 1 1 100%;
+  }
+  .career-detail-page > .panel {
+    scroll-margin-top: 180px;
+  }
+}
+.explore-filter-disclosure {
+  margin-top: 1rem;
+}
+.explore-filter-disclosure summary {
+  cursor: pointer;
+  padding: 0.5rem 0;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+/* Guided exploration: small choices first, detailed information on demand. */
+.explore-start {
+  margin-bottom: 1.75rem;
+}
+.explore-start h2 {
+  margin-bottom: 0.25rem;
+  font-size: 1.2rem;
+}
+.explore-start p {
+  margin-top: 0;
+}
+.explore-interest-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.interest-button,
+.filter-chip,
+.career-tab {
+  background: #172238;
+  color: #cbd5e1;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 0.65rem 0.9rem;
+}
+.interest-button:hover,
+.filter-chip:hover {
+  border-color: #64748b;
+  background: #1e293b;
+}
+.interest-button[aria-pressed='true'] {
+  background: #1c3557;
+  color: #bfdbfe;
+  border-color: #3b82f6;
+}
+.explore-active-filters,
+.comparison-picked {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.explore-active-filters {
+  margin-block: 0.75rem;
+}
+.filter-chip {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.85rem;
+}
+.explore-saved-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.explore-saved-toggle input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+}
+.career-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+.current-path-badge {
+  color: #86efac;
+  font-size: 0.75rem;
+}
+.career-try-preview {
+  display: grid;
+  gap: 0.2rem;
+  padding: 1rem;
+  background: #0f172a;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-top: 1rem;
+}
+.career-try-preview strong {
+  font-size: 0.95rem;
+}
+.career-quick-facts {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+.career-quick-facts summary {
+  cursor: pointer;
+  color: #94a3b8;
+  padding-block: 0.5rem;
+}
+.career-card-actions .compare-career {
+  margin-left: auto;
+}
+.career-card-actions .compare-career[aria-pressed='true'] {
+  color: #67e8f9;
+}
+.explore-compare-tray {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border: 1px solid #3b526e;
+  border-radius: 12px;
+  background: #172238;
+  margin-bottom: 1.25rem;
+}
+.explore-compare-tray[hidden] {
+  display: none;
+}
+.explore-compare-tray p {
+  margin: 0;
+  width: 100%;
+}
+.career-section-nav {
+  position: sticky;
+  top: 80px;
+  z-index: 2;
+  background: #0f172af5;
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 0;
+  gap: 0.4rem;
+}
+.career-tab {
+  border-color: transparent;
+  background: transparent;
+  white-space: nowrap;
+}
+.career-tab[aria-selected='true'] {
+  color: #bfdbfe;
+  background: #1c3557;
+  border-color: #3b526e;
+}
+.career-tab-panel {
+  padding-top: 1.25rem;
+  min-width: 0;
+}
+.career-tab-panel > .panel {
+  margin-bottom: 1.5rem;
+}
+.career-tab-panel[hidden] {
+  display: none;
+}
+.career-next-choices {
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  margin-top: 1.25rem;
+}
+.career-next-choices .button {
+  margin-right: 1rem;
+}
+@media (max-width: 600px) {
+  .career-section-nav {
+    position: static;
+  }
+  .career-tab {
+    white-space: normal;
+    flex: 1 1 auto;
+    text-align: center;
+    padding: 0.55rem 0.7rem;
+  }
+  .career-next-choices .button {
+    display: block;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  .explore-compare-tray .button {
+    width: 100%;
+  }
+  .career-card-actions .compare-career {
+    margin-left: 0;
+  }
+}
+.career-section-nav {
+  scroll-margin-top: 88px;
+}
+.explore-search {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  padding: 1.25rem;
+}
+.explore-search > label:first-child,
+.explore-search > .explore-filter-disclosure {
+  grid-column: 1 / -1;
+}
+.explore-search > label,
+.explore-search > .explore-filter-disclosure {
+  margin: 0;
+}
+.explore-search .explore-saved-toggle input {
+  min-height: 1.1rem;
+}
+@media (max-width: 600px) {
+  .explore-search {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+}

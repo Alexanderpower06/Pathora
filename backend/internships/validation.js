@@ -112,10 +112,10 @@ export function validateStudent(input, careers = {}) {
   };
 }
 export function validateTaskUpdate(input) {
-  if (!['todo', 'done', 'blocked'].includes(input.status))
+  if (!['todo', 'in-progress', 'done', 'blocked'].includes(input.status))
     throw new InputError('Choose a valid task status.');
   const evidence = validateText(input.evidence ?? '', 'Evidence or blocker', 1500);
-  if (input.status !== 'todo' && evidence.length < 10)
+  if (['done', 'blocked'].includes(input.status) && evidence.length < 10)
     throw new InputError('Describe what you did or where you are stuck in at least 10 characters.');
   return { status: input.status, evidence, link: validateUrl(input.link) };
 }

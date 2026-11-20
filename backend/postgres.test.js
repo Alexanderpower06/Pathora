@@ -180,3 +180,53 @@ test('PostgreSQL retains onboarding drafts and editable career catalog across re
     await reopened.close();
   }
 });
+
+test('PostgreSQL retains new career progress, comparisons, and private content feedback across reconnection', async (context) => {
+  const { database, options } = await fixture(context);
+  const user = { id: randomUUID(), email: 'explore@example.test', passwordHash: 'test hash' };
+  const other = {
+    id: randomUUID(),
+    email: 'other-explore@example.test',
+    passwordHash: 'test hash',
+  };
+  await database.auth.createUser(user);
+  await database.auth.createUser(other);
+  const service = createStudentService(database.auth.students(user.id), database.careerCatalog);
+  await service.saveProfile({ ...profile, role: 'qa' });
+  await service.updateTask('milestone-one', {
+    role: 'qa',
+    status: 'in-progress',
+    evidence: '',
+    link: '',
+  });
+  await service.savePathboard({ careerId: 'qa', action: 'save' });
+  await service.savePathboard({ careerId: 'qa', action: 'compare', careerIds: ['qa', 'software'] });
+  await service.exploreEvent({
+    careerId: 'qa',
+    action: 'report',
+    message: 'Please review this learning-resource link.',
+  });
+  await database.close();
+  const reopened = await openDatabase(options);
+  try {
+    const restored = await createStudentService(
+      reopened.auth.students(user.id),
+      reopened.careerCatalog,
+    ).state();
+    assert.equal(restored.profile.role, 'qa');
+    assert.equal(restored.tasks[0].status, 'in-progress');
+    assert.deepEqual(restored.pathboard.comparison, ['qa', 'software']);
+    assert.equal(
+      (await reopened.auth.students(user.id).read()).contentFeedback[0].status,
+      'needs-review',
+    );
+    const privateState = await createStudentService(
+      reopened.auth.students(other.id),
+      reopened.careerCatalog,
+    ).state();
+    assert.deepEqual(privateState.pathboard.saved, []);
+    assert.equal(privateState.profile, null);
+  } finally {
+    await reopened.close();
+  }
+});

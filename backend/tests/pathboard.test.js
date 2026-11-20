@@ -17,7 +17,7 @@ const reflection = {
 test('Pathboard completion requires evidence and reflection, and survives removal and readding', async () => {
   const repository = memoryStudentRepository();
   const service = createStudentService(repository);
-  assert.equal((await service.state()).explorationCareers.length, 5);
+  assert.equal((await service.state()).explorationCareers.length, 10);
   const input = {
     careerId: 'software',
     action: 'complete-experiment',

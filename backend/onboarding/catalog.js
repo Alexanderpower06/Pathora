@@ -1,4 +1,4 @@
-import { explorationCareer } from '../exploration/catalog.js';
+import { EXPLORATION_CAREERS, explorationCareer } from '../exploration/catalog.js';
 // Starter curriculum data. PostgreSQL owns editable copies after first initialization.
 const definitions = [
   [
@@ -352,6 +352,33 @@ export const CAREERS = definitions.map(
     })),
   }),
 );
+// New career IDs are inserted by the existing PostgreSQL catalog initializer.
+// Existing edited rows and progress IDs remain untouched.
+for (const career of EXPLORATION_CAREERS) {
+  if (CAREERS.some((item) => item.id === career.id)) continue;
+  CAREERS.push({
+    id: career.id,
+    name: career.name,
+    description: career.description,
+    categories: { Foundations: career.skills },
+    skills: career.skills,
+    affinities: ['technology', 'problem-solving'],
+    environment: 'desk',
+    stretch:
+      'This is an authored starter curriculum. Check the actual requirements of each opportunity.',
+    source: career.sources[0],
+    milestones: career.milestones.map((milestone) => ({
+      id: milestone.id,
+      title: milestone.title,
+      category: milestone.category,
+      hours: milestone.hours,
+      why: milestone.why,
+      deliverable: milestone.evidence,
+      dependencies: milestone.prerequisites,
+      resource: milestone.resources[0],
+    })),
+  });
+}
 export const SITUATIONS = [
   'High School Student',
   'College Student',

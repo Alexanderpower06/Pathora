@@ -15,6 +15,22 @@ import { authRequest, requireSession } from './modules/session.js';
 let state = null;
 let account = null;
 let view = 'today';
+const exploreState = { query: '', filters: {}, career: null, specializations: {} };
+function openCareer(id) {
+  exploreState.career = id;
+  window.history.replaceState(null, '', id ? '#explore/' + id : '#explore');
+  changeView('explore');
+}
+function exploreControls() {
+  return {
+    api,
+    changeView,
+    exploreState,
+    openCareer,
+    openTask: tasks.open,
+    refreshExplore: render,
+  };
+}
 const api = createApi(
   (next) => {
     state = next;
@@ -30,6 +46,13 @@ const tasks = setupTaskDialog({ getState: () => state, api });
 const applications = setupApplications({ getState: () => state, api });
 function changeView(next) {
   view = next;
+  window.history.replaceState(
+    null,
+    '',
+    next === 'explore'
+      ? '#explore' + (exploreState.career ? '/' + exploreState.career : '')
+      : '#' + next,
+  );
   notice('');
   render();
   $('#content').focus({ preventScroll: true });
@@ -48,7 +71,7 @@ function render() {
   }
   const pages = {
     today: () => renderDashboard(state, { openTask: tasks.open, changeView }),
-    explore: () => renderExplore(state, { api, changeView }),
+    explore: () => renderExplore(state, exploreControls()),
     pathboard: () => renderPathboard(state, { api, changeView }),
     direction: () => renderDirection(state, { api, changeView }),
     skills: () => renderSkills(state, profile.open),
@@ -88,6 +111,11 @@ async function connect() {
       return;
     }
     notice('');
+    const match = window.location.hash.match(/^#explore(?:\/([a-z-]+))?$/);
+    if (match) {
+      view = 'explore';
+      exploreState.career = match[1] ?? null;
+    }
     render();
     if (new URLSearchParams(window.location.search).get('start') === '1') {
       window.history.replaceState(null, '', '/workspace');

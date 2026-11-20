@@ -17,6 +17,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const LOCAL_HOSTS = new Set(['127.0.0.1', 'localhost', '[::1]']);
 const PUBLIC_FILES = Object.freeze({
   '/': 'index.html',
+  '/explore.css': 'explore.css',
   '/onboarding': 'onboarding.html',
   '/onboarding.css': 'onboarding.css',
   '/onboarding.js': 'onboarding.js',
@@ -39,6 +40,13 @@ const PUBLIC_FILES = Object.freeze({
   '/modules/skills.js': 'modules/skills.js',
   '/modules/onboarding.js': 'modules/onboarding.js',
   '/modules/dashboard.js': 'modules/dashboard.js',
+  '/modules/explore-guidance.js': 'modules/explore-guidance.js',
+  '/modules/explore-card.js': 'modules/explore-card.js',
+  '/modules/career-tabs.js': 'modules/career-tabs.js',
+  '/modules/explore-search.js': 'modules/explore-search.js',
+  '/modules/explore-actions.js': 'modules/explore-actions.js',
+  '/modules/career-path.js': 'modules/career-path.js',
+  '/modules/career-preview.js': 'modules/career-preview.js',
   '/modules/explore.js': 'modules/explore.js',
   '/modules/pathboard.js': 'modules/pathboard.js',
   '/modules/career-detail.js': 'modules/career-detail.js',
@@ -93,6 +101,15 @@ export function createHttpServer(database, { allowLegacy = false } = {}) {
     );
     try {
       const path = requestUrl(request).pathname;
+      if (path === '/explore' && ['GET', 'HEAD'].includes(request.method)) {
+        const user = await auth.user(request);
+        response.writeHead(302, {
+          Location: user ? '/workspace#explore' : '/login?next=explore',
+          'Cache-Control': 'no-store',
+        });
+        response.end();
+        return;
+      }
       if (await handleAuth(request, response, path)) return;
       if (path.startsWith('/api/student/')) {
         const user = await auth.user(request);

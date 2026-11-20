@@ -29,7 +29,7 @@ async function finish(flow, skills = []) {
   return flow.complete();
 }
 test('all careers have defined categories, core skills and eight usable milestones', () => {
-  assert.equal(CAREERS.length, 10); // Retain eight existing careers and add Cloud and IT.
+  assert.equal(CAREERS.length, 15); // Keep legacy careers while adding researched technology directions.
   for (const career of CAREERS) {
     assert.equal(career.milestones.length, 8);
     assert.equal(new Set(career.milestones.map((task) => task.id)).size, 8);

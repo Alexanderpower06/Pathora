@@ -3,7 +3,8 @@ import { authRequest } from './modules/session.js';
 
 const registering = window.location.pathname === '/signup';
 const start = registering || new URLSearchParams(window.location.search).get('start') === '1';
-const suffix = start ? '?start=1' : '';
+const explore = new URLSearchParams(window.location.search).get('next') === 'explore';
+const suffix = explore ? '?next=explore' : start ? '?start=1' : '';
 const form = $('#auth-form');
 $('#login-link').href = '/login' + suffix;
 $('#signup-link').href = '/signup' + suffix;
@@ -35,6 +36,6 @@ form.addEventListener('submit', (event) => {
       throw new Error('Your passwords don’t match. Try again.');
     await authRequest(registering ? 'register' : 'login', { email, password });
     form.reset();
-    window.location.assign('/onboarding');
+    window.location.assign(explore ? '/workspace#explore' : '/onboarding');
   });
 });

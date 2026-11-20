@@ -19,6 +19,23 @@ async function signin(page, email) {
   await page.getByLabel('Password', { exact: true }).fill(password);
   await page.getByRole('button', { name: 'Sign in →', exact: true }).click();
 }
+async function createSoftwarePath(page, email) {
+  await signup(page, email);
+  await page.getByRole('radio', { name: 'Just Exploring', exact: true }).check();
+  await next(page);
+  await next(page);
+  await page.getByLabel('Search careers', { exact: true }).fill('Software');
+  await page.getByRole('radio', { name: 'Software Engineer', exact: true }).check();
+  await next(page);
+  await next(page);
+  await page.getByRole('checkbox', { name: 'None Yet', exact: true }).check();
+  await page.getByRole('button', { name: 'See my path →', exact: true }).click();
+  await page.getByRole('button', { name: 'View my Pathora →', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'A manageable next step, there.', exact: true }),
+  ).toBeVisible();
+}
+
 test('student onboarding saves, populates a plan and restores progress on sign-in', async ({
   page,
 }) => {
@@ -175,7 +192,8 @@ test('Pathboard saves experiments without changing a chosen Path and restores th
   const software = page
     .locator('section.panel')
     .filter({ has: page.getByRole('heading', { name: 'Software Engineering', exact: true }) });
-  await software.getByRole('button', { name: 'Add to Pathboard', exact: true }).click();
+  await software.getByRole('button', { name: 'Save to Pathboard', exact: true }).click();
+  await page.getByRole('button', { name: 'Pathboard', exact: true }).click();
   await page.getByText('Reflect and record your experiment', { exact: true }).click();
   await page.getByRole('button', { name: 'Finish experiment', exact: true }).click();
   await expect(page.getByRole('alert')).toContainText('Experiment evidence is required');
@@ -201,4 +219,82 @@ test('Pathboard saves experiments without changing a chosen Path and restores th
   await expect(
     page.getByText('Working toward a software engineer opportunity.', { exact: true }),
   ).toBeVisible();
+});
+
+test('signed-in users search and filter careers, read a specific preparation milestone, and resume a detail link', async ({
+  page,
+}) => {
+  await createSoftwarePath(page, 'explore-search@example.test');
+  await page.getByRole('button', { name: 'Sign out', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Welcome back.', exact: true })).toBeVisible();
+  await page.goto('/explore');
+  await expect(page.getByRole('heading', { name: 'Welcome back.', exact: true })).toBeVisible();
+  await page.getByLabel('Email address', { exact: true }).fill('explore-search@example.test');
+  await page.getByLabel('Password', { exact: true }).fill(password);
+  await page.getByRole('button', { name: 'Sign in →', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Explore Your Future', exact: true }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Build useful software', exact: true }).click();
+  await expect(page.getByText('2 careers found', { exact: true })).toBeVisible();
+  const softwareCard = page.locator('section.panel').filter({
+    has: page.getByRole('heading', { name: 'Software Engineering', exact: true }),
+  });
+  await softwareCard.getByRole('button', { name: 'Save to Pathboard', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Explore Your Future', exact: true }),
+  ).toBeVisible();
+  await expect(
+    softwareCard.getByRole('button', { name: 'Unsave Software Engineering', exact: true }),
+  ).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'Compare Software Engineering', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Compare in Pathboard →', exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole('button', { name: 'Compare Quality Assurance / Software Testing', exact: true })
+    .click();
+  await page.getByRole('button', { name: 'Compare in Pathboard →', exact: true }).click();
+  await expect(
+    page.getByRole('table', { name: 'Your saved career options', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('columnheader', { name: 'Quality Assurance / Software Testing', exact: true }),
+  ).toBeVisible();
+  await page.getByRole('button', { name: 'Explore', exact: true }).click();
+  await page.getByRole('searchbox', { name: 'Find a career', exact: true }).fill('SQL');
+  await page.locator('.explore-filter-disclosure > summary').click();
+  await page.getByRole('combobox', { name: 'Career Field', exact: true }).selectOption('Software');
+  await expect(page.getByText('1 career found', { exact: true })).toBeVisible();
+  await page.getByRole('button', { name: 'Explore Career →', exact: true }).click();
+  await expect(page.getByRole('tab', { name: 'Overview', exact: true })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await page.getByRole('tab', { name: 'Overview', exact: true }).press('ArrowRight');
+  await expect(page.getByRole('tab', { name: 'Your path', exact: true })).toHaveAttribute(
+    'aria-selected',
+    'true',
+  );
+  await expect(
+    page.getByRole('heading', { name: 'Your Path to This Career', exact: true }),
+  ).toBeVisible();
+  await page
+    .locator('summary')
+    .filter({ hasText: /^SQL fundamentals$/ })
+    .click();
+  await expect(
+    page.getByText('Use SELECT, WHERE, ORDER BY, JOIN, and GROUP BY.', { exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'PostgreSQL tutorial ↗', exact: true }),
+  ).toHaveAttribute('href', 'https://www.postgresql.org/docs/current/tutorial.html');
+  await page.reload();
+  await expect(
+    page.getByRole('heading', { name: 'Software Engineering', exact: true }),
+  ).toBeVisible();
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth))
+    .toBe(true);
 });

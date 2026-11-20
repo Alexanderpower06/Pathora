@@ -1,3 +1,4 @@
+import { recordExploration } from '../exploration/events.js';
 import { updatePathboard } from '../exploration/service.js';
 import { defaultCareers, careerMap } from '../onboarding/catalog.js';
 import { randomUUID } from 'node:crypto';
@@ -28,6 +29,10 @@ export function createStudentService(repository, getCareers = defaultCareers) {
   return {
     async state() {
       return state(await repository.read());
+    },
+    async exploreEvent(input) {
+      await repository.update((document) => recordExploration(document, input));
+      return { ok: true };
     },
     async savePathboard(input) {
       return mutate((document) => updatePathboard(document, input));

@@ -26,6 +26,20 @@ export function updatePathboard(document, input) {
   const career = explorationCareer(input.careerId);
   if (!career) throw new InputError('Choose a supported exploration career.');
   const board = (document.pathboard ??= { saved: [], entries: {} });
+  if (input.action === 'compare') {
+    if (
+      !Array.isArray(input.careerIds) ||
+      input.careerIds.length < 2 ||
+      input.careerIds.length > 3 ||
+      new Set(input.careerIds).size !== input.careerIds.length ||
+      input.careerIds.some((id) => !explorationCareer(id))
+    )
+      throw new InputError('Choose two or three different supported careers.');
+    board.comparison = [...input.careerIds];
+    for (const id of input.careerIds) if (!board.saved.includes(id)) board.saved.push(id);
+    event(document, 'career_compared', career.id);
+    return;
+  }
   if (input.action === 'save') {
     if (!board.saved.includes(career.id)) {
       board.saved.push(career.id);

@@ -17,7 +17,8 @@
     "demo": "node backend/scripts/demo.js",
     "test:postgres": "node backend/scripts/test.js",
     "lint": "eslint frontend backend scripts e2e *.config.js",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "careers:review": "node backend/scripts/review-careers.js"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

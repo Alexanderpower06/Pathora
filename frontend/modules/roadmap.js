@@ -30,7 +30,11 @@ export function renderRoadmap(state, openTask) {
       card.prepend(
         el(
           'span',
-          task.status === 'done' ? 'Completed' : 'Needs help',
+          task.status === 'done'
+            ? 'Completed'
+            : task.status === 'in-progress'
+              ? 'In progress'
+              : 'Needs help',
           'status-badge ' + task.status,
         ),
       );
@@ -48,7 +52,7 @@ export function renderRoadmap(state, openTask) {
   sources.append(
     el(
       'p',
-      `Reviewed ${state.catalog.reviewedOn}. Recommendations are curated starter guidance; they are not generated from live postings.`,
+      `General starter resources reviewed ${state.catalog.reviewedOn}. Career-specific sources and review dates are available in Explore. Guidance is not generated from live postings.`,
       'fine-print',
     ),
   );

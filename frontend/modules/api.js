@@ -28,6 +28,7 @@ export function createApi(onState, accountId = () => null) {
   }
   return {
     load: () => request('state'),
+    event: (data) => request('explore-event', 'POST', data),
     save(path, method, data) {
       const operation = queue.then(async () => {
         const state = await request(path, method, data);

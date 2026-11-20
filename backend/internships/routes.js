@@ -7,6 +7,8 @@ export function studentRoutes(service) {
     let result;
     let status = 200;
     if (path === '/api/student/state' && method === 'GET') result = await service.state();
+    else if (path === '/api/student/explore-event' && method === 'POST')
+      result = await service.exploreEvent(await readJsonBody(request));
     else if (path === '/api/student/pathboard' && method === 'PATCH')
       result = await service.savePathboard(await readJsonBody(request));
     else if (path === '/api/student/matches' && method === 'POST')

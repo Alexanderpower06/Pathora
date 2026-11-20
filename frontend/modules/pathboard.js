@@ -1,5 +1,5 @@
 import { el, action, heading, panel, empty, notice } from './dom.js';
-import { careerDetail } from './career-detail.js';
+import { careerDetail } from './career-preview.js';
 
 const questions = {
   interests: 'What interests me?',
@@ -115,13 +115,27 @@ function comparison(careers) {
     ['Work environment', 'environment'],
     ['Starter skills', 'skills'],
     ['Tools to explore', 'technologies'],
+    ['Education', 'education'],
+    ['Entry search titles', 'entryTitles'],
+    ['Project', 'projectTitle'],
+    ['Pay and outlook', 'comparisonMarket'],
   ]) {
     const row = el('tr');
     const title = el('th', label);
     title.scope = 'row';
     row.append(title);
     for (const career of careers)
-      row.append(el('td', Array.isArray(career[key]) ? career[key].join(' · ') : career[key]));
+      row.append(
+        el(
+          'td',
+          Array.isArray(career[key])
+            ? career[key].join(' · ')
+            : (career[key] ??
+                (key === 'projectTitle'
+                  ? career.project.title
+                  : `${career.pay ? '$' + career.pay.toLocaleString('en-US') + ' · ' + career.payOccupation + ' · May 2025, US, all experience levels.' : 'Comparable pay not verified.'} ${career.outlook ?? ''} Reviewed ${career.reviewedOn}; sources inside.`)),
+        ),
+      );
     body.append(row);
   }
   table.append(body);
@@ -150,7 +164,53 @@ export function renderPathboard(state, controls) {
     root.append(card);
     return root;
   }
-  if (careers.length >= 2) root.append(comparison(careers));
+  if (careers.length >= 2) {
+    const picker = panel('Choose two or three careers to compare');
+    const selected = new Set(
+      state.pathboard.comparison ?? careers.slice(0, 3).map((career) => career.id),
+    );
+    const comparisonNode = el('div');
+    const update = () =>
+      comparisonNode.replaceChildren(
+        comparison(state.explorationCareers.filter((career) => selected.has(career.id))),
+      );
+    for (const career of careers) {
+      const label = el('label', undefined, 'comparison-choice');
+      const checkbox = el('input');
+      checkbox.type = 'checkbox';
+      checkbox.checked = selected.has(career.id);
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked && selected.size === 3) {
+          checkbox.checked = false;
+          notice('Choose up to three careers for comparison.');
+          return;
+        }
+        if (checkbox.checked) selected.add(career.id);
+        else selected.delete(career.id);
+        save.disabled = selected.size < 2;
+        update();
+      });
+      label.append(checkbox, el('span', career.name));
+      picker.append(label);
+    }
+    const save = action('Save comparison', async () => {
+      save.disabled = true;
+      try {
+        await controls.api.save('pathboard', 'PATCH', {
+          careerId: [...selected][0],
+          action: 'compare',
+          careerIds: [...selected],
+        });
+        notice('Comparison saved.');
+      } catch (error) {
+        notice(error.message, true);
+        save.disabled = false;
+      }
+    });
+    picker.append(save);
+    update();
+    root.append(picker, comparisonNode);
+  }
   for (const career of careers) {
     const entry = state.pathboard.entries[career.id] ?? {};
     const card = panel(career.name, career.description);

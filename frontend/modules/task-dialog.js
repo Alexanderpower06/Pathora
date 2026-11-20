@@ -12,7 +12,7 @@ export function setupTaskDialog({ api, getState }) {
     details.replaceChildren(
       el(
         'p',
-        `${task.category} · Estimated effort: ${task.hours} ${task.hours === 1 ? 'hour' : 'hours'}`,
+        `${task.category} · First practice budget: ${task.hours} ${task.hours === 1 ? 'hour' : 'hours'}. The full milestone may need more work.`,
         'task-meta',
       ),
       el('h3', 'Why this matters'),
@@ -21,6 +21,19 @@ export function setupTaskDialog({ api, getState }) {
       el('p', task.deliverable),
       link(task.resource.title + ' ↗', task.resource.url),
     );
+    const guide = getState()
+      .explorationCareers.find((career) => career.id === selectedRole)
+      ?.milestones.find((milestone) => milestone.id === task.id);
+    if (guide) {
+      details.append(el('h3', 'Suggested practice tasks'));
+      const list = el('ol');
+      for (const item of guide.tasks) list.append(el('li', item));
+      details.append(list, el('p', guide.prerequisiteNote));
+      for (const resource of guide.resources)
+        if (resource.url !== task.resource.url)
+          details.append(link(resource.title + ' ↗', resource.url));
+      details.append(el('p', 'Next: ' + guide.next, 'fine-print'));
+    }
     if (task.status === 'blocked')
       details.append(
         el(

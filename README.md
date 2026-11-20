@@ -112,3 +112,7 @@ Explore now offers five technology directions. Students can save options to a pr
 After pulling these changes, restart `npm run dev` so the backend loads the new routes and catalog seeds. Existing accounts and saved progress stay in PostgreSQL. `npm run demo` is temporary and does not contain your saved account.
 
 See [the product contract](docs/PRODUCT.md), [architecture and migration plan](docs/ARCHITECTURE.md), and [student research protocol](docs/RESEARCH.md) for implemented behavior, remaining work, and validation gates.
+
+### Explore career-to-job upgrade
+
+Explore careers from the signed-in workspace. The `/explore` link asks visitors to sign in and then opens Explore inside their workspace. Signed-in Explore now includes search/filters, focused career details, seven preparation stages, practice milestones/resources, dated occupational sources, saved comparisons, and links to Build. Run `npm run careers:review` for content checks. See [Explore implementation and limits](docs/EXPLORE.md) for source scope, maintenance, privacy, and deferred work. Restart the backend after updating.
